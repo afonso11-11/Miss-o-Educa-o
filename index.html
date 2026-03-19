@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDU Analytics Platform - Simulação Big Data</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: linear-gradient(135deg, #0A0F16 60%, #1a2233 100%);
+            --accent: #FF6B35;
+            --primary: #4ECDC4;
+            --text: #F0F4F8;
+            --card-bg: rgba(255,255,255,0.06);
+            --card-glow: 0 4px 32px 0 rgba(78,205,196,0.10);
+            --success: #10B981;
+            --warning: #F59E0B;
+            --shadow: 0 8px 32px 0 rgba(0,0,0,0.18);
+            --glass: rgba(255,255,255,0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg-dark);
+            color: var(--text);
+            font-family: 'Inter', 'Montserrat', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-attachment: fixed;
+            background-size: cover;
+            transition: background 0.6s;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border-radius: 24px;
+            background: var(--glass);
+        }
+
+        /* Header Principal */
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 2px 24px 0 rgba(78,205,196,0.08);
+        }
+
+        .mission-section {
+            text-align: left;
+        }
+
+        .mission-title {
+            color: var(--accent);
+            font-size: 3.2rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+            font-family: 'Montserrat', 'Inter', sans-serif;
+            font-weight: 800;
+            text-shadow: 0 2px 16px rgba(255,107,53,0.10);
+        }
+
+        .scenario-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(90deg, rgba(78,205,196,0.18), rgba(255,107,53,0.10));
+            color: var(--primary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 1.15rem;
+            box-shadow: 0 2px 12px 0 rgba(78,205,196,0.10);
+        }
+
+        /* Controles Interativos */
+        .controls-panel {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: var(--card-glow);
+        }
+
+        .control-group {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            padding: 0.85rem 1.7rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1.08rem;
+            letter-spacing: 0.01em;
+            box-shadow: 0 2px 16px 0 rgba(255,107,53,0.10);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-4px) scale(1.04);
+            box-shadow: 0 6px 24px 0 rgba(255,107,53,0.18);
+            filter: brightness(1.08);
+        }
+
+        /* Layout Principal */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2rem;
+        }
+
+        /* Cards de Etapas */
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .step-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border-radius: 24px;
+            padding: 2.2rem 2rem 2rem 2rem;
+            border: 1.5px solid rgba(255,255,255,0.13);
+            transition: all 0.3s cubic-bezier(.4,1.4,.6,1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--card-glow);
+        }
+
+        .step-card:hover {
+            transform: translateY(-8px) scale(1.025);
+            border-color: var(--primary);
+            box-shadow: 0 8px 32px 0 rgba(78,205,196,0.18);
+        }
+
+        .step-card.active {
+            border-color: var(--accent);
+            box-shadow: 0 10px 40px 0 rgba(255,107,53,0.18), 0 2px 24px 0 rgba(78,205,196,0.10);
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .step-number {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.35rem;
+            color: #fff;
+            box-shadow: 0 2px 12px 0 rgba(255,107,53,0.10);
+        }
+
+        .step-title {
+            font-size: 1.6rem;
+            margin: 0;
+            font-family: 'Montserrat', 'Inter', sans-serif;
+            font-weight: 700;
+        }
+
+        .step-description {
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+            font-size: 1.08rem;
+        }
+
+        /* Gráficos */
+        .chart-container {
+            height: 300px;
+            margin: 1.5rem 0;
+            position: relative;
+            border-radius: 18px;
+            background: rgba(255,255,255,0.03);
+            box-shadow: 0 2px 12px 0 rgba(78,205,196,0.08);
+        }
+
+        /* Painel de Métricas */
+        .metrics-panel {
+            background: linear-gradient(135deg, rgba(255,107,53,0.13), rgba(78,205,196,0.13));
+            padding: 1.5rem;
+            border-radius: 18px;
+            margin-top: 1.5rem;
+            box-shadow: 0 2px 12px 0 rgba(78,205,196,0.08);
+        }
+
+        .metric-value {
+            font-size: 2.7rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--accent), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0.5rem 0;
+            letter-spacing: -0.01em;
+        }
+
+        /* Painel Lateral */
+        .sidebar {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border-radius: 24px;
+            padding: 2.2rem 2rem 2rem 2rem;
+            border: 1.5px solid rgba(255,255,255,0.13);
+            height: fit-content;
+            box-shadow: var(--card-glow);
+        }
+
+        .sidebar-title {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+            font-family: 'Montserrat', 'Inter', sans-serif;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+        }
+
+        .log-container {
+            background: rgba(0,0,0,0.22);
+            border-radius: 14px;
+            padding: 1.1rem;
+            height: 400px;
+            overflow-y: auto;
+            font-family: 'Monaco', monospace;
+            font-size: 0.98rem;
+            box-shadow: 0 2px 12px 0 rgba(255,107,53,0.08);
+        }
+
+        .log-entry {
+            padding: 0.5rem 0.7rem;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            color: var(--success);
+            border-radius: 6px;
+            margin-bottom: 2px;
+            transition: background 0.2s;
+        }
+        .log-entry:hover {
+            background: rgba(78,205,196,0.08);
+        }
+
+        .log-entry.warning {
+            color: var(--warning);
+        }
+
+        .log-entry.error {
+            color: var(--accent);
+        }
+
+        /* Responsividade */
+        @media (max-width: 1200px) {
+            .steps-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .main-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <!-- Cabeçalho Principal -->
+        <header class="main-header">
+            <div class="mission-section">
+                <h1 class="mission-title">Missão: Educação</h1>
+                <div class="scenario-badge">
+                    <i class="fas fa-users"></i>
+                    Cenário: EAD 100k alunos
+                </div>
+            </div>
+        </header>
+
+        <!-- Painel de Controles -->
+        <div class="controls-panel">
+            <div class="control-group">
+                <button class="control-btn" onclick="startSimulation()">
+                    <i class="fas fa-play"></i> Iniciar Simulação
+                </button>
+                <button class="control-btn" onclick="resetSimulation()">
+                    <i class="fas fa-redo"></i> Reiniciar
+                </button>
+                <button class="control-btn" onclick="toggleAutoUpdate()">
+                    <i class="fas fa-sync"></i> Atualização Automática
+                </button>
+                <div style="margin-left: auto; display: flex; align-items: center; gap: 1rem;">
+                    <span>Velocidade:</span>
+                          <input type="range" id="speedControl" min="1" max="10" value="5" 
+                              onchange="setUpdateSpeed(this.value)">
+                </div>
+            </div>
+        </div>
+
+        <!-- Conteúdo Principal -->
+        <div class="main-content">
+            <!-- Grid de Etapas -->
+            <div class="steps-grid">
+                <!-- Etapa 1: Coleta -->
+                <div class="step-card active" id="step1">
+                    <div class="step-header">
+                        <div class="step-number">1</div>
+                        <h3 class="step-title">Coletar Interação</h3>
+                    </div>
+                    <p class="step-description">
+                        Monitoramento em tempo real de todas as interações dos alunos: cliques, 
+                        tempo em vídeo, downloads, participação em fóruns e exercícios.
+                    </p>
+                    <div class="chart-container">
+                        <canvas id="interactionChart"></canvas>
+                    </div>
+                    <div class="metrics-panel">
+                        <div>Eventos por segundo</div>
+                        <div class="metric-value" id="eventsPerSecond">2.4k</div>
+                        <div style="font-size: 0.9rem; color: rgba(255,255,255,0.6);">
+                            <i class="fas fa-arrow-up" style="color: var(--success);"></i>
+                            +12% em relação à semana anterior
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Etapa 2: Perfil -->
+                <div class="step-card" id="step2">
+                    <div class="step-header">
+                        <div class="step-number">2</div>
+                        <h3 class="step-title">Criar Perfil</h3>
+                    </div>
+                    <p class="step-description">
+                        Análise comportamental para criar perfis de aprendizagem individuais, 
+                        identificando estilos preferenciais e níveis de conhecimento.
+                    </p>
+                    <div class="chart-container">
+                        <canvas id="profileChart"></canvas>
+                    </div>
+                    <div class="metrics-panel">
+                        <div>Perfis ativos</div>
+                        <div class="metric-value" id="activeProfiles">24,583</div>
+                        <div style="font-size: 0.9rem; color: rgba(255,255,255,0.6);">
+                            Segmentação: Visual (45%), Auditivo (30%), Prático (25%)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Etapa 3: Recomendação -->
+                <div class="step-card" id="step3">
+                    <div class="step-header">
+                        <div class="step-number">3</div>
+                        <h3 class="step-title">Recomendar Conteúdo</h3>
+                    </div>
+                    <p class="step-description">
+                        Sistema de recomendação personalizado baseado em machine learning que 
+                        sugere conteúdos relevantes para cada perfil de aluno.
+                    </p>
+                    <div class="chart-container">
+                        <canvas id="recommendationChart"></canvas>
+                    </div>
+                    <div class="metrics-panel">
+                        <div>Taxa de aceitação</div>
+                        <div class="metric-value" id="acceptanceRate">82%</div>
+                        <div style="font-size: 0.9rem; color: rgba(255,255,255,0.6);">
+                            <i class="fas fa-check-circle" style="color: var(--success);"></i>
+                            94% de satisfação com recomendações
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Etapa 4: Retenção -->
+                <div class="step-card" id="step4">
+                    <div class="step-header">
+                        <div class="step-number">4</div>
+                        <h3 class="step-title">Medir Retenção</h3>
+                    </div>
+                    <p class="step-description">
+                        Análise preditiva de retenção e identificação de alunos em risco de 
+                        evasão, com alertas proativos para intervenção.
+                    </p>
+                    <div class="chart-container">
+                        <canvas id="retentionChart"></canvas>
+                    </div>
+                    <div class="metrics-panel">
+                        <div>Churn preditivo</div>
+                        <div class="metric-value" id="churnRate">9.5%</div>
+                        <div style="font-size: 0.9rem; color: rgba(255,255,255,0.6);">
+                            <i class="fas fa-arrow-down" style="color: var(--success);"></i>
+                            -3.2% em relação ao mês anterior
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Painel Lateral -->
+            <div class="sidebar">
+                <h3 class="sidebar-title">
+                    <i class="fas fa-stream"></i> Logs em Tempo Real
+                </h3>
+                <div class="log-container" id="logContainer">
+                    <!-- Logs serão inseridos aqui via JavaScript -->
+                </div>
+
+                <h3 class="sidebar-title" style="margin-top: 2rem;">
+                    <i class="fas fa-info-circle"></i> Estatísticas do Sistema
+                </h3>
+                <div class="metrics-panel">
+                    <div>Alunos ativos agora</div>
+                    <div class="metric-value" id="activeNow">8,423</div>
+                    <div style="margin-top: 1rem;">
+                        <div>Conteúdos recomendados hoje</div>
+                        <div class="metric-value" id="recommendedToday">124,582</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+
+
+        // Configuração inicial
+        let simulationActive = false;
+        let autoUpdate = true;
+        let updateSpeed = 5;
+        let currentStep = 1;
+
+        // Elementos DOM
+        const logContainer = document.getElementById('logContainer');
+        const stepCards = document.querySelectorAll('.step-card');
+
+        // Função para adicionar logs
+        function addLog(message, type = 'info') {
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry ${type}`;
+            logEntry.innerHTML = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+
+            // Limitar logs a 50 entradas
+            if (logContainer.children.length > 50) {
+                logContainer.removeChild(logContainer.firstChild);
+            }
+        }
+
+        // Função para atualizar métricas
+        function updateMetrics() {
+            if (!simulationActive) return;
+
+            // Métricas dinâmicas
+            document.getElementById('eventsPerSecond').textContent = 
+                `${Math.floor(Math.random() * 3000 + 2000).toLocaleString()}`;
+
+            document.getElementById('activeProfiles').textContent = 
+                `${Math.floor(Math.random() * 5000 + 24000).toLocaleString()}`;
+
+            document.getElementById('acceptanceRate').textContent = 
+                `${Math.floor(Math.random() * 10 + 78)}%`;
+
+            document.getElementById('churnRate').textContent = 
+                `${(Math.random() * 5 + 8).toFixed(1)}%`;
+
+            document.getElementById('activeNow').textContent = 
+                `${Math.floor(Math.random() * 2000 + 8000).toLocaleString()}`;
+
+            document.getElementById('recommendedToday').textContent = 
+                `${Math.floor(Math.random() * 50000 + 120000).toLocaleString()}`;
+
+            // Adicionar logs simulados
+            const logTypes = [
+                {msg: 'Novo aluno registrado no sistema', type: 'info'},
+                {msg: 'Perfil atualizado para aluno #' + Math.floor(Math.random()*100000), type: 'info'},
+                {msg: 'Recomendação enviada para 1,245 alunos', type: 'info'},
+                {msg: 'Alerta: 3 alunos identificados com risco de evasão', type: 'warning'},
+                {msg: 'Processamento de batch concluído', type: 'info'},
+                {msg: 'Sistema de recomendação otimizado', type: 'info'}
+            ];
+
+            const randomLog = logTypes[Math.floor(Math.random() * logTypes.length)];
+            addLog(randomLog.msg, randomLog.type);
+
+            // Ativar próximo passo visualmente
+            stepCards.forEach(card => card.classList.remove('active'));
+            document.getElementById(`step${currentStep}`).classList.add('active');
+            currentStep = currentStep === 4 ? 1 : currentStep + 1;
+        }
+
+        // Funções de controle
+        function startSimulation() {
+            simulationActive = true;
+            addLog('Simulação iniciada - Coletando dados de 100k alunos...', 'info');
+            document.querySelector('.control-btn i.fa-play').className = 'fas fa-pause';
+            document.querySelector('.control-btn').onclick = pauseSimulation;
+            document.querySelector('.control-btn').innerHTML = '<i class="fas fa-pause"></i> Pausar Simulação';
+        }
+
+        function pauseSimulation() {
+            simulationActive = false;
+            addLog('Simulação pausada', 'warning');
+            document.querySelector('.control-btn i.fa-pause').className = 'fas fa-play';
+            document.querySelector('.control-btn').onclick = startSimulation;
+            document.querySelector('.control-btn').innerHTML = '<i class="fas fa-play"></i> Continuar Simulação';
+        }
+
+        function resetSimulation() {
+            simulationActive = false;
+            logContainer.innerHTML = '';
+            addLog('Sistema reiniciado - Pronto para nova simulação', 'info');
+            document.querySelector('.control-btn i.fa-pause').className = 'fas fa-play';
+            document.querySelector('.control-btn').onclick = startSimulation;
+            document.querySelector('.control-btn').innerHTML = '<i class="fas fa-play"></i> Iniciar Simulação';
+        }
+
+        function toggleAutoUpdate() {
+            autoUpdate = !autoUpdate;
+            const btn = document.querySelectorAll('.control-btn')[2];
+            if (autoUpdate) {
+                btn.innerHTML = '<i class="fas fa-sync"></i> Atualização Automática (ON)';
+                addLog('Atualização automática ativada', 'info');
+            } else {
+                btn.innerHTML = '<i class="fas fa-sync"></i> Atualização Automática (OFF)';
+                addLog('Atualização automática desativada', 'warning');
+            }
+        }
+
+        function setUpdateSpeed(value) {
+            updateSpeed = value;
+            addLog(`Velocidade da simulação ajustada para nível ${value}/10`, 'info');
+        }
+
+        // Configuração dos gráficos
+        const charts = {
+            interactionChart: new Chart(document.getElementById('interactionChart'), {
+                type: 'line',
+                data: {
+                    labels: Array.from({length: 12}, (_, i) => `${i*2}h`),
+                    datasets: [{
+                        label: 'Interações',
+                        data: Array.from({length: 12}, () => Math.floor(Math.random() * 3000 + 1000)),
+                        borderColor: '#4ECDC4',
+                        backgroundColor: 'rgba(78,205,196,0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } }
+                }
+            }),
+            profileChart: new Chart(document.getElementById('profileChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Visual', 'Auditivo', 'Prático', 'Social'],
+                    datasets: [{
+                        data: [45, 30, 20, 5],
+                        backgroundColor: ['#FF6B35', '#4ECDC4', '#10B981', '#F59E0B']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            }),
+            recommendationChart: new Chart(document.getElementById('recommendationChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Vídeo', 'Artigo', 'Exercício', 'Quiz', 'Projeto'],
+                    datasets: [{
+                        label: 'Recomendações',
+                        data: [65, 40, 85, 55, 70],
+                        backgroundColor: ['#FF6B35', '#4ECDC4', '#FF6B35', '#4ECDC4', '#FF6B35']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } }
+                }
+            }),
+            retentionChart: new Chart(document.getElementById('retentionChart'), {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'Risco de Churn',
+                        data: Array.from({length: 100}, () => ({
+                            x: Math.random() * 100,
+                            y: Math.random() * 100
+                        })),
+                        backgroundColor: '#FF6B35',
+                        pointRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } }
+                }
+            })
+        };
+
+        // Atualização automática dos gráficos
+        setInterval(() => {
+            if (!simulationActive || !autoUpdate) return;
+
+            // Atualizar dados dos gráficos
+            charts.interactionChart.data.datasets[0].data = 
+                Array.from({length: 12}, () => Math.floor(Math.random() * 3000 + 1000));
+            charts.interactionChart.update();
+
+            charts.profileChart.data.datasets[0].data = [
+                40 + Math.random() * 10,
+                25 + Math.random() * 10,
+                20 + Math.random() * 10,
+                5 + Math.random() * 5
+            ];
+            charts.profileChart.update();
+
+            updateMetrics();
+        }, 2000 / updateSpeed);
+
+        // Inicialização
+        addLog('Sistema EDU Analytics inicializado', 'info');
+        addLog('Pronto para simular fluxo de dados de 100k alunos', 'info');
+        addLog('Clique em "Iniciar Simulação" para começar', 'info');
+    </script>
+</body>
+</html>
