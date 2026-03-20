@@ -1,78 +1,96 @@
-# EDU Analytics Platform - Simulação Big Data
+# EDU Analytics Platform — Simulação Big Data
 
-Projeto de interface interativa para simular um cenário de Big Data aplicado à educação a distância (EAD), com foco em análise de comportamento de alunos, recomendação de conteúdo e retenção.
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black)
+![Chart.js](https://img.shields.io/badge/Chart.js-FF6384?style=flat&logo=chartdotjs&logoColor=white)
 
-## Sobre o projeto
+Dashboard interativo que simula um pipeline de **Big Data aplicado à Educação a Distância (EAD)**. Toda a aplicação roda em um único arquivo HTML, sem necessidade de servidor ou dependências externas além de CDNs públicos.
 
-A página apresenta uma simulação visual do fluxo de dados de 100 mil alunos em uma plataforma educacional. O objetivo é demonstrar, de forma didática, as etapas principais de um pipeline analítico:
+---
 
-1. Coletar interação
-2. Criar perfil
-3. Recomendar conteúdo
-4. Medir retenção
+## Visão Geral
 
-Além disso, o projeto exibe métricas dinâmicas, logs em tempo real e gráficos que ajudam na interpretação dos dados simulados.
+A simulação percorre **4 etapas** do pipeline de dados em tempo real:
+
+| # | Etapa | Descrição |
+|---|-------|-----------|
+| 1 | **Coletar Interação** | Captura eventos gerados pelos alunos (cliques, acessos, tempo de tela) |
+| 2 | **Criar Perfil** | Agrupa comportamentos e constrói o perfil de aprendizagem do aluno |
+| 3 | **Recomendar Conteúdo** | Sugere materiais personalizados com base no perfil identificado |
+| 4 | **Medir Retenção** | Calcula indicadores de engajamento e risco de churn |
+
+---
 
 ## Funcionalidades
 
-- Simulação interativa com controles de iniciar, pausar e reiniciar
-- Atualização automática dos dados simulados
-- Controle de velocidade da simulação
-- Logs em tempo real no painel lateral
-- Cartões de etapas com destaque visual da etapa ativa
-- Gráficos interativos com Chart.js:
-  - Linha: interações
-  - Rosca: perfis de aprendizagem
-  - Barras: recomendações
-  - Dispersão: risco de churn
-- Layout responsivo para desktop e mobile
+- ▶ Iniciar, ⏸ Pausar e 🔄 Reiniciar a simulação
+- Atualização automática configurável (ON/OFF)
+- Controle deslizante de velocidade da simulação
+- Cartões com destaque visual da etapa ativa
+- Painel de logs em tempo real
+- Estatísticas de alunos ativos e recomendações do dia
+- Gráficos dinâmicos com **Chart.js**:
+  - **Linha** — interações ao longo do tempo
+  - **Rosca (Doughnut)** — distribuição dos perfis de aprendizagem
+  - **Barras** — volume de recomendações por categoria
+  - **Dispersão (Scatter)** — mapa de risco de churn
+- Layout **responsivo** para desktop e mobile
 
-## Tecnologias utilizadas
+---
 
-- HTML5
-- CSS3 (estilo glassmorphism, gradientes e animações)
-- JavaScript (manipulação de DOM e simulação de dados)
-- Chart.js (renderização dos gráficos)
-- Font Awesome (ícones)
-- Google Fonts
+## Estrutura do Projeto
 
-## Estrutura do projeto
+```
+big data duo/
+├── index.html   # Aplicação completa (HTML + CSS + JavaScript)
+└── README.md    # Documentação do projeto
+```
 
-- index.html: página única com estrutura, estilos e scripts
+---
 
-## Como executar
+## Tecnologias Utilizadas
 
-1. Faça o download ou clone deste repositório.
-2. Abra a pasta do projeto.
-3. Abra o arquivo index.html no navegador.
+| Tecnologia | Versão / CDN |
+|------------|-------------|
+| HTML5 | — |
+| CSS3 | — |
+| JavaScript (ES6+) | — |
+| [Chart.js](https://www.chartjs.org/) | CDN (jsdelivr) |
+| [Font Awesome](https://fontawesome.com/) | 6.4.0 (cdnjs) |
+| [Google Fonts](https://fonts.google.com/) | Inter + Montserrat |
 
-Opcionalmente, para uma melhor experiência em desenvolvimento, utilize a extensão Live Server no VS Code e execute o arquivo em servidor local.
+---
 
-## Como usar
+## Como Executar
 
-1. Clique em Iniciar Simulação.
-2. Acompanhe a atualização das métricas e dos logs.
-3. Ajuste a velocidade no controle deslizante.
-4. Use Atualização Automática para ativar ou desativar o refresh contínuo.
-5. Clique em Reiniciar para limpar o estado atual e começar novamente.
+```bash
+# 1. Clone o repositório
+git clone https://github.com/afonso11-11/Miss-o-Educa-o.git
 
-## Objetivo acadêmico
+# 2. Acesse a pasta
+cd "Miss-o-Educa-o"
 
-Este projeto é indicado para apresentações, prototipação e estudos de conceitos de Big Data em educação, como:
+# 3. Abra o arquivo no navegador
+start index.html   # Windows
+open index.html    # macOS
+xdg-open index.html # Linux
+```
 
-- ingestão de eventos
-- perfilamento comportamental
-- recomendação personalizada
-- análise preditiva de evasão
+> **Dica:** No VS Code, use a extensão **Live Server** para recarregamento automático durante o desenvolvimento.
 
-## Melhorias futuras sugeridas
+---
 
-- Separar CSS e JavaScript em arquivos dedicados
-- Integrar API real para dados históricos
-- Persistir logs e métricas em banco de dados
-- Adicionar filtros por curso, turma e período
-- Incluir autenticação e perfis de usuário
+## Como Usar
 
-## Autor
+1. Clique em **Iniciar Simulação** para começar o pipeline.
+2. Acompanhe os **logs** e os **gráficos** sendo atualizados em tempo real.
+3. Ajuste a **velocidade** no controle deslizante.
+4. Ative ou desative a **Atualização Automática** conforme necessário.
+5. Clique em **Reiniciar** para limpar o estado e recomeçar do zero.
 
-Projeto desenvolvido para fins educacionais e de demonstração.
+---
+
+## Licença
+
+Este projeto é de uso educacional e livre para fins de estudo e demonstração.
